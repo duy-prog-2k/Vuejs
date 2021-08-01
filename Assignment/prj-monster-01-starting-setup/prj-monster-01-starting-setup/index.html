@@ -9,8 +9,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
-    <script src="https://unpkg.com/vue@next" defer></script>
-    <script src="app.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
   </head>
   <body>
     <header>
@@ -20,25 +19,137 @@
       <section id="monster" class="container">
         <h2>Monster Health</h2>
         <div class="healthbar">
-          <div class="healthbar__value"></div>
+          <div class="healthbar__value" :style='monsterBarWidth'></div>
         </div>
       </section>
       <section id="player" class="container">
         <h2>Your Health</h2>
         <div class="healthbar">
-          <div class="healthbar__value"></div>
+          <div class="healthbar__value" :style="playerBarWidth"></div>
         </div>
       </section>
-      <section id="controls">
-        <button>ATTACK</button>
-        <button>SPECIAL ATTACK</button>
-        <button>HEAL</button>
-        <button>SURRENDER</button>
+      <section class="container" v-if="winner">
+        <h2>Game Over!</h2>
+        <h3 v-if="winner === 'Monster'">You lost!</h3>
+        <h3 v-else-if="winner === 'You'">You won!</h3>
+        <h3 v-else>It's a Draw!</h3>
+        <button @click="startGame">Start new  game</button>
+      </section>
+      <section id="controls" v-else>
+        <button @click="attackMonster">ATTACK</button>
+        <button @click="specialAttack" :disabled="mayUseSpecialAttack">SPECIAL ATTACK</button>
+        <button @click="heal">HEAL</button>
+        <button @click="surrender">SURRENDER</button>
       </section>
       <section id="log" class="container">
         <h2>Battle Log</h2>
-        <ul></ul>
+        <ul v-for="log in battleLog" :key="log">
+          <li>{{ log }}</li>
+        </ul>
       </section>
-    </div>
+    </div> 
   </body>
+  
+  <script>
+    function getRandomNumber(min, max){
+      return Math.floor(Math.random() * (max - min) + min);
+    }
+    let vm = new Vue({
+      el: '#game',
+      data:{
+        monsterHealth: 100, 
+        playerHealth: 100,
+        numOfRound: 0,
+        winner: null,
+        battleLog: [], 
+      },
+      computed:{
+        monsterBarWidth(){
+          if(this.monsterHealth < 0){
+            return {width: '0%'};
+          }
+          return {width: this.monsterHealth + '%'};
+        },
+        playerBarWidth(){
+          if(this.playerHealth < 0){
+            return {width: '0%'};
+          }
+          return {width: this.playerHealth + '%'};
+        },
+        mayUseSpecialAttack(){
+          return this.numOfRound % 3 !== 0;
+        }
+      },
+      watch:{
+        monsterHealth(value){
+          if(value <= 0 && this.playerHealth <= 0){
+            this.winner = 'draw';
+          }
+          else if(value <=0){
+            this.winner = "You";
+            this.addLog('Winner: Player', '', '');
+          }
+        },
+        playerHealth(value){
+          if(value <= 0 && this.monsterHealth <=0){
+            this.winner = 'draw';
+          }
+          else if(value <= 0){
+            this.winner = 'Monster';
+            this.addLog('Winner: Monster', '', '');
+          }
+        }
+      },
+      methods:{
+        startGame: function(){
+          this.monsterHealth = 100, 
+          this.playerHealth = 100,
+          this.numOfRound = 0,
+          this.winner = null,
+          this.battleLog = []
+        },
+        attackMonster: function(){
+          this.numOfRound++;
+          const attackValue = getRandomNumber(5, 12);
+          this.monsterHealth -= attackValue;
+          this.addLog('Player', 'attack Monster with', attackValue + ' damage')
+          this.attackPlayer();
+        },
+        attackPlayer: function(){
+          const attackValue = getRandomNumber(8, 18);
+          this.playerHealth -= attackValue;
+          this.addLog('Monster', 'attack Player with', attackValue + ' damage');
+        },
+        specialAttack: function(){
+          this.numOfRound++;
+          const specialAttackValue= getRandomNumber(10, 20);
+          this.monsterHealth -= specialAttackValue;
+          this.addLog('Player', 'special attack Monseter with', specialAttackValue + ' damage');
+          this.attackPlayer();
+        },
+        heal: function(){
+          
+          this.numOfRound++;
+
+          const healthValue = getRandomNumber(10, 20);
+
+          if(this.playerHealth >= 100){
+            this.playerHealth = 100;
+          }else{
+            this.playerHealth += healthValue;
+          }
+          this.addLog('Player', 'heal', healthValue + ' HP');
+          this.attackPlayer();
+        },
+        surrender: function(){
+          this.winner = 'Monster';
+          this.addLog('Player', 'surredered', '');
+        },
+        addLog: function(who, what, value){
+          this.battleLog.push(who + ' ' + what + ' ' + value);
+        }
+      },
+    });
+  </script>
+
 </html>
