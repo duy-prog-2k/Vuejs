@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-auto" max-width="400" tile>
-    <v-card-title>{{ name }}</v-card-title>
+    <v-card-title>{{ name }} {{ isFavorite === '1' ? '(Favorite)' : '' }}</v-card-title>
     <v-btn depressed class="ma-3" @click="toggleDetails">{{ detailsAreVisible ? 'Hide' : 'Show' }} Details</v-btn>
     <v-list v-if="detailsAreVisible">
       <v-list-item>
@@ -37,7 +37,11 @@ export default {
     emailAddress:{
       type: String, 
       require: false,
-      default: 'Chua nhap email'
+    },
+    isFavorite:{
+      type: String,
+      require: false, 
+      default: '0'
     }
   },
   data() {
