@@ -25,21 +25,21 @@ export default {
   //   'emailAddress'
   // ],
   // Props validation 
-  // props:{
-  //   name:{
-  //     type: String, 
-  //     require: true
-  //   },
-  //   phoneNumber:{
-  //     type:String,
-  //     require: true,
-  //   },
-  //   emailAddress:{
-  //     type: String, 
-  //     require: false,
-  //     default: 'Chua nhap email'
-  //   }
-  // },
+  props:{
+    name:{
+      type: String, 
+      require: true
+    },
+    phoneNumber:{
+      type:String,
+      require: true,
+    },
+    emailAddress:{
+      type: String, 
+      require: false,
+      default: 'Chua nhap email'
+    }
+  },
   data() {
     return {
       detailsAreVisible: false,
