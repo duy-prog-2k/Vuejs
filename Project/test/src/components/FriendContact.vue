@@ -1,7 +1,8 @@
 <template>
   <v-card class="mx-auto" max-width="400" tile>
-    <v-card-title>{{ name }} {{ isFavorite === '1' ? '(Favorite)' : '' }}</v-card-title>
+    <v-card-title>{{ name }} {{ isFavorite === true ? '(Favorite)' : '' }}</v-card-title>
     <v-btn depressed class="ma-3" @click="toggleDetails">{{ detailsAreVisible ? 'Hide' : 'Show' }} Details</v-btn>
+    <v-btn depressed class="ma-3" @click="toggleFavorite">Toggle Favorite</v-btn>
     <v-list v-if="detailsAreVisible">
       <v-list-item>
         {{ name }}
@@ -39,9 +40,13 @@ export default {
       require: false,
     },
     isFavorite:{
-      type: String,
+      type: Boolean,
       require: false, 
-      default: '0'
+      default: false
+    }, 
+    id:{
+      type:String,
+      require: true
     }
   },
   data() {
@@ -52,6 +57,11 @@ export default {
   methods:{
     toggleDetails: function(){
       this.detailsAreVisible = !this.detailsAreVisible;
+    },
+    // gửi id đến component cha
+    toggleFavorite: function(){
+      var val = this.id; 
+      this.$emit('toggle-favorite', val);
     }
   }
 };
