@@ -40,12 +40,14 @@ export default {
       link: ''
     };
   },
+  // gắn hàm submitResource được provide bởi component StoredResouce  
   inject: ['submitResource'],
   methods: {
     submitData(){
       // if(this.title.trim() === ''|| this.description.trim() === '' || this.link.trim() === ''){
 
       // }
+      // Truyền dữ liệu lên để thực hiện hàm submitResource ở TheResource
       this.submitResource(this.title, this.description, this.link);
     }
   }

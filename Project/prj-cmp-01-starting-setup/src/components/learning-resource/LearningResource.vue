@@ -18,6 +18,7 @@
 <script>
 export default {
   props: ['id','title', 'description', 'link'],
+  // inject hàm deleteResource để gửi id lên thực hiện hàm deleteResource ở TheResource 
   inject: ['deleteResource']
 };
 </script>

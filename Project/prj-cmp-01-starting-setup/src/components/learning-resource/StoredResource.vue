@@ -15,6 +15,7 @@ export default {
   components:{
     LearningResource
   },
+  // Nhận resources data từ component TheResource để làm props cho component learning-resource
   inject: ['resources'],
 }
 </script>

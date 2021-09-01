@@ -10,7 +10,7 @@
       >Add Resource
     </base-button>
   </base-card>
-
+  <!-- Dynamic Component -->
   <component :is="selectedTab" />
 </template>
 
@@ -43,8 +43,11 @@ export default {
   },
   provide() {
     return {
+      // provide data resource cho Stored Resouce 
       resources: this.storedResource,
-      submitResource: this.addResource,
+      // Provide method addResource cho component AddResource key: submitResource
+      submitResource: this.addResource, 
+      // Provide method deleteResource cho component LearningResource key: deleteResource
       deleteResource: this.deleteResource
     };
   },
@@ -59,8 +62,8 @@ export default {
         description: description,
         link: link
       };
-      this.storedResource.unshift(newResource);
-      this.selectedTab = 'stored-resource';
+      this.storedResource.unshift(newResource); // Thêm dữ liệu vào đầu mảng 
+      this.selectedTab = 'stored-resource'; // Chuyển lại tab  store resource sau khi add resource 
     },
     deleteResource(idDelete) {
       var index = this.storedResource
@@ -74,9 +77,12 @@ export default {
   },
   computed: {
     storedResButtonMode() {
-      return this.selectedTab === 'stored-resource' ? null : 'flat';
+      // Nếu tab được bấm là stored resource thì nút bấm sẽ ko có màu, ngược lại thì set mode 
+      //là flat như ở trên template
+      return this.selectedTab === 'stored-resource' ? null : 'flat'; 
     },
     addResButtonMode() {
+      // Dưới đây cũng thế 
       return this.selectedTab === 'add-resource' ? null : 'flat';
     }
   }
