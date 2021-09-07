@@ -5,7 +5,13 @@
       <form @submit.prevent="submitSurvey">
         <div class="form-control">
           <label for="name">Your Name</label>
-          <input type="text" id="name" name="name" v-model.trim="enteredName" />
+          <input
+            type="text"
+            id="name"
+            name="name"
+            v-model.trim="enteredName"
+            :class="{ error_input: invalidInput === true }"
+          />
         </div>
         <h3>My learning experience was ...</h3>
         <div class="form-control">
@@ -38,7 +44,7 @@
           />
           <label for="rating-great">Great</label>
         </div>
-        <p v-if="invalidInput">
+        <p v-if="invalidInput" class="error_message">
           One or more input fields are invalid. Please check your provided data.
         </p>
         <p v-if="error">{{ error }}</p>
@@ -65,13 +71,15 @@ export default {
   // emits: ['survey-submit'],
   methods: {
     submitSurvey() {
+      // Nếu không nhập gì hoặc không chọn rating thì this.invalidInput = true sẽ hiện lỗi thông báo như trên
+      // thông qua v-if và điều kiện là this.invalidInput
       if (this.enteredName === '' || !this.chosenRating) {
         this.invalidInput = true;
         return;
       }
+      // reset lại invalidInput
       this.invalidInput = false;
-      this.error = null;
-      
+      this.error = null; // reset lại error trước khi fecth data
       // using axios to send post http request
       axios
         .post(
@@ -82,7 +90,7 @@ export default {
           }
         )
         .then(response => {
-          if (response.status === 200) {
+          if (response.status === 200 || response.status === 201) {
             //
           } else {
             throw new Error('Cannot save data !');
@@ -91,29 +99,29 @@ export default {
         .catch(error => {
           this.error = error.message;
         });
+      // reset lại sau khi post
       this.enteredName = '';
       this.chosenRating = null;
-      
-      // using fetch 
+
+      // using fetch
     } // fetch(
-      //   'https://vue-http-demo-a4c89-default-rtdb.firebaseio.com/survey.json',
-      //   {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json'
-      //     },
-      //     body: JSON.stringify({
-      //       name: this.enteredName,
-      //       rating: this.chosenRating
-      //     })
-      //   }
-      // );
+    //   'https://vue-http-demo-a4c89-default-rtdb.firebaseio.com/survey.json',
+    //   {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({
+    //       name: this.enteredName,
+    //       rating: this.chosenRating
+    //     })
+    //   }
+    // );
 
-      // this.$emit('survey-submit', {
-      //   userName: this.enteredName,
-      //   rating: this.chosenRating
-      // });
-
+    // this.$emit('survey-submit', {
+    //   userName: this.enteredName,
+    //   rating: this.chosenRating
+    // });
   }
 };
 </script>
@@ -127,5 +135,12 @@ input[type='text'] {
   display: block;
   width: 20rem;
   margin-top: 0.5rem;
+}
+.error_message {
+  color: red;
+  font-style: italic;
+}
+.error_input {
+  border: red 1px solid;
 }
 </style>

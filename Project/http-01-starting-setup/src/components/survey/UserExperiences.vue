@@ -67,7 +67,7 @@ export default {
           const data = res.data;
           console.log(data);
           for (const id in data) {
-            results.push({
+            results.unshift({
               id: id,
               name: data[id].name,
               rating: data[id].rating
